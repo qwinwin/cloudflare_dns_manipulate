@@ -71,7 +71,7 @@ if __name__ == "__main__":
             delete_record(list_record(name))
             try:
                 record_type = sys.argv[3]
-                create_record(name, content, record_type=record_type)
+                create_record(name, content, record_type=record_type.upper())
             except Exception:
                 create_record(name, content)
     except Exception:
