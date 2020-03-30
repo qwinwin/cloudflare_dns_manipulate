@@ -68,12 +68,11 @@ if __name__ == "__main__":
         else:
             name = sys.argv[1]
             content = sys.argv[2]
+            delete_record(list_record(name))
             try:
                 record_type = sys.argv[3]
-                delete_record(list_record(name))
                 create_record(name, content, record_type=record_type)
             except Exception:
-                delete_record(list_record(name))
                 create_record(name, content)
     except Exception:
         list_record()
