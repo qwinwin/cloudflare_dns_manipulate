@@ -23,7 +23,8 @@ def list_record(*name):
             get_msg = jsons["name"], jsons["type"], jsons["content"], jsons[
                 "id"]
             if len(name) > 0 and re.match(
-                    str(jsons["name"]).split('.')[0], str(name[0]), re.I):
+                    str(jsons["name"]).split('.')[0] + "$", str(name[0]),
+                    re.I):
                 print(get_msg)
                 return jsons["id"]
                 break
