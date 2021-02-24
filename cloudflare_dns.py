@@ -2,10 +2,10 @@
 # coding = utf-8
 import requests
 import argparse
-cf_id = 'admin@kwin.win'
-cf_key = ''
-zone_id = ''
-zone_name = 'kwin.win'
+cf_id = "api id|mail"
+cf_key = "api key"
+zone_id = "domain zone id"
+zone_name = 'domain zone name'
 
 
 def list_record(name=''):
