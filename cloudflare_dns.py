@@ -2,8 +2,8 @@
 # coding = utf-8
 import requests
 import argparse
-cf_id = "api id|mail"
-cf_key = "api key"
+cf_id = "cloudflare account id(mail)"
+cf_key = "global api key"
 zone_id = "domain zone id"
 zone_name = 'domain zone name'
 
