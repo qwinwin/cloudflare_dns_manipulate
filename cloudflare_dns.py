@@ -1,79 +1,70 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding = utf-8
 import requests
-import re
-import sys
-cf_id = "your id|mail"
-cf_key = "your key"
-zone_id = "domain zone id"
-base_url = "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records"
-headers = {
-    "X-Auth-Email": cf_id,
-    "X-Auth-Key": cf_key,
-    "Content-Type": "application/json"
-}
+import argparse
+cf_id = 'admin@kwin.win'
+cf_key = ''
+zone_id = ''
+zone_name = 'kwin.win'
 
 
-def list_record(*name):
-    list_url = base_url + "?per_page=100"
-    resp = requests.get(list_url, headers=headers)
-    for i in range(100):
-        try:
-            jsons = resp.json()["result"][i]
-            get_msg = jsons["name"], jsons["type"], jsons["content"], jsons[
-                "id"]
-            if len(name) > 0 and re.match(
-                    str(jsons["name"]).split('.')[0] + "$", str(name[0]),
-                    re.I):
-                print(get_msg)
-                return jsons["id"]
-                break
-            elif len(name) == 0:
-                print(get_msg)
-            i += 1
-        except Exception:
-            break
+def list_record(name=''):
+    params = {'name': f'{name}.{zone_name}'} if name else {'per_page': 100}
+    resp = requests.get(base_url, headers=headers, params=params)
+    for msg in resp.json()['result']:
+        print(msg['name'], msg['type'], msg['content'])
+        if name:
+            return msg['id']
 
 
-def create_record(name, content, record_type="A"):
-    data = {
-        "type": record_type,
-        "name": name,
-        "content": content,
-        "ttl": 120,
-        "priority": 10
-    }
-    create = requests.post(base_url, headers=headers, json=data)
-    print("New Record:")
-    print(create.content)
+def new_record(name, content, record_id, record_type='A'):
+    data = {'type': record_type, 'name': name, 'content': content}
+    if record_id:
+        msg = requests.put(f'{base_url}/{record_id}',
+                           headers=headers,
+                           json=data).json()['result']
+        print('Changed to')
+    else:
+        msg = requests.post(base_url, headers=headers,
+                            json=data).json()['result']
+        print('New record:')
+    print(msg['name'], msg['type'], msg['content'])
 
 
 def delete_record(record_id):
-    try:
-        modify_url = base_url + "/" + record_id
-        delete = requests.delete(modify_url, headers=headers)
-        print(delete.content)
-        print("Deleted")
-    except Exception:
-        print("Record Not Found")
+    if record_id:
+        delete = requests.delete(f'{base_url}/{record_id}', headers=headers)
+        if delete.json()['success']:
+            print('Deleted')
+    else:
+        print(f'Record not found: {name}')
 
 
-if __name__ == "__main__":
-    try:
-        action = sys.argv[1]
-        name = sys.argv[2]
-        if action == "del":
-            delete_record(list_record(name))
-        elif action == "get":
-            list_record(name)
-        else:
-            name = sys.argv[1]
-            content = sys.argv[2]
-            delete_record(list_record(name))
-            try:
-                record_type = sys.argv[3]
-                create_record(name, content, record_type=record_type.upper())
-            except Exception:
-                create_record(name, content)
-    except Exception:
-        list_record()
+def get_parser():
+    parser = argparse.ArgumentParser(
+        description="Manipulate DNS records on cloudflare")
+    parser.add_argument('-n', '--name')
+    parser.add_argument('-c', '--content')
+    parser.add_argument('-t', '--type', default='A')
+    parser.add_argument('-d', '--delete', action="store_true")
+    return parser
+
+
+if __name__ == '__main__':
+    base_url = f'https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records'
+    headers = {
+        'X-Auth-Email': cf_id,
+        'X-Auth-Key': cf_key,
+        'Content-Type': 'application/json'
+    }
+    args = get_parser().parse_args()
+    name = args.name
+    content = args.content
+    record_type = args.type
+    delete = args.delete
+    if name and delete:
+        delete_record(list_record(name))
+    elif name and content:
+        new_record(name, content, list_record(name), record_type)
+    else:
+        list_record(name)
