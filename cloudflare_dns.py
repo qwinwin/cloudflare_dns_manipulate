@@ -9,14 +9,15 @@ cf_key = "global api key"
 zone_id = "domain zone id"
 zone_name = 'domain zone name'
 
+
 def list_record(name=''):
     global record
     params = {'name': f'{name}.{zone_name}'} if name else {'per_page': 100}
     resp = requests.get(base_url, headers=headers, params=params)
     for msg in resp.json()['result']:
-        print(eval(print_msg))
+        print(eval(req_msg))
         if name:
-            record = eval(print_msg)
+            record = eval(req_msg)
             return msg['id']
 
 
@@ -27,13 +28,13 @@ def new_record(name, content, record_id, record_type='A'):
                            headers=headers,
                            json=data).json()['result']
         print('Changed to')
-        logging.info(f'update: {eval(print_msg)}')
+        logging.info(f'update: {eval(req_msg)}')
     else:
         msg = requests.post(base_url, headers=headers,
                             json=data).json()['result']
         print('New record:')
-        logging.info(f'create: {eval(print_msg)}')
-    print(eval(print_msg))
+        logging.info(f'create: {eval(req_msg)}')
+    print(eval(req_msg))
 
 
 def delete_record(record_id):
@@ -58,10 +59,9 @@ def get_parser():
 
 if __name__ == '__main__':
     logging.basicConfig(filename='/var/log/cloudflare_dns.log',
-                        encoding='utf-8',
                         format='%(levelname)s %(asctime)s %(message)s',
                         level=logging.INFO)
-    print_msg = """f'{msg["name"]} {msg["type"]} {msg["content"]}'"""
+    req_msg = """f'{msg["name"]} {msg["type"]} {msg["content"]}'"""
     base_url = f'https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records'
     headers = {
         'X-Auth-Email': cf_id,
