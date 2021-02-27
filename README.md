@@ -10,5 +10,4 @@
 `zone_id` = "域名的zone_id"  
 `zone_name` = '根域名名称'
 
-- Read more  
-[cloudflare_dns_manipulate](https://blog.kwin.win/2021/02/25/cloudflare-dns-manipulate/)  
+[Read more](https://blog.kwin.win/2021/02/25/cloudflare-dns-manipulate/)  
