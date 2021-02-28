@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding = utf-8
-import requests
+import httpx
 import argparse
 import logging
 
@@ -13,7 +13,7 @@ zone_name = 'domain zone name'
 def list_record(name=''):
     global record
     params = {'name': f'{name}.{zone_name}'} if name else {'per_page': 100}
-    resp = requests.get(base_url, headers=headers, params=params)
+    resp = httpx.get(base_url, headers=headers, params=params)
     for msg in resp.json()['result']:
         print(eval(req_msg))
         if name:
@@ -24,14 +24,12 @@ def list_record(name=''):
 def new_record(name, content, record_id, record_type='A'):
     data = {'type': record_type, 'name': name, 'content': content}
     if record_id:
-        msg = requests.put(f'{base_url}/{record_id}',
-                           headers=headers,
-                           json=data).json()['result']
+        msg = httpx.put(f'{base_url}/{record_id}', headers=headers,
+                        json=data).json()['result']
         print('Changed to')
         logging.info(f'update: {eval(req_msg)}')
     else:
-        msg = requests.post(base_url, headers=headers,
-                            json=data).json()['result']
+        msg = httpx.post(base_url, headers=headers, json=data).json()['result']
         print('New record:')
         logging.info(f'create: {eval(req_msg)}')
     print(eval(req_msg))
@@ -39,7 +37,7 @@ def new_record(name, content, record_id, record_type='A'):
 
 def delete_record(record_id):
     if record_id:
-        msg = requests.delete(f'{base_url}/{record_id}', headers=headers)
+        msg = httpx.delete(f'{base_url}/{record_id}', headers=headers)
         if msg.json()['success']:
             print('Deleted')
             logging.info(f'delete: {record}')
