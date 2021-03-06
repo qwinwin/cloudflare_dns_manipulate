@@ -47,7 +47,7 @@ def delete_record(record_id):
 
 def get_parser():
     parser = argparse.ArgumentParser(
-        description="Manipulate DNS records on cloudflare")
+        description="Manipulate DNS records hosted on cloudflare")
     parser.add_argument('-n', '--name')
     parser.add_argument('-c', '--content')
     parser.add_argument('-t', '--type', default='A')
