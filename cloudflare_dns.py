@@ -52,6 +52,7 @@ def get_parser():
     parser.add_argument('-c', '--content')
     parser.add_argument('-t', '--type', default='A')
     parser.add_argument('-d', '--delete', action="store_true")
+    parser.add_argument('-m', '--multi', action="store_true")
     return parser
 
 
