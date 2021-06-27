@@ -16,13 +16,15 @@ def list_record(name=''):
     resp = httpx.get(base_url, headers=headers, params=params)
     msgs = []
     count = 0
-    for msg in resp.json()['result']:
-        if not name:
+    if name:
+        for msg in resp.json()['result']:
+            if msg['name'] == req_name:
+                msgs.append(msg)
+                print(f"{count}: {eval(req_msg)}")
+                count += 1
+    else:
+        for msg in resp.json()['result']:
             print(eval(req_msg))
-        if msg['name'] == f'{req_name}':
-            msgs.append(msg)
-            print(f"{count}: {eval(req_msg)}")
-            count += 1
     return msgs
 
 
