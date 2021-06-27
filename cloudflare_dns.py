@@ -36,6 +36,7 @@ def new_record(name, content, msgs, record_type='A'):
         old_msg = eval(req_msg)
         msg = httpx.put(f'{base_url}/{msg["id"]}', headers=headers,
                         json=data).json()['result']
+        print('Changed to')
         logger.info(f"CHANGED | {old_msg} -> {eval(req_msg)}")
     else:
         msg = httpx.post(base_url, headers=headers, json=data).json()['result']
@@ -50,6 +51,7 @@ def delete_record(msgs):
         msg = msgs[option]
         if httpx.delete(f'{base_url}/{msg["id"]}',
                         headers=headers).json()['success']:
+            print('Deleted')
             logger.info(f'DELETED | {eval(req_msg)}')
     else:
         print(f'Record not found: {name}')
