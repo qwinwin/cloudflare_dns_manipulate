@@ -25,7 +25,6 @@ def list_record(name='', record_type=''):
 
 
 def new_record(name, content, msgs, record_type='', proxied=False):
-    print(record_type)
     data = {
         'type': record_type,
         'name': name,
