@@ -8,7 +8,7 @@ from loguru import logger
 def list_record(name='', record_type=''):
     req_name = f'{name}.{zone_name}' if name != '@' else f'{zone_name}'
     params = {'name': f'{req_name}'} if name else {'per_page': 100}
-    params['type'] = record_type
+    params['type'] = None if record_type == 'all' else record_type
     resp = httpx.get(base_url, headers=headers, params=params)
     msgs = []
     count = 0
@@ -25,6 +25,7 @@ def list_record(name='', record_type=''):
 
 
 def new_record(name, content, msgs, record_type='', proxied=False):
+    print(record_type)
     data = {
         'type': record_type,
         'name': name,
@@ -63,8 +64,7 @@ def get_parser():
         description="Manipulate DNS records hosted on cloudflare")
     parser.add_argument('-n', '--name')
     parser.add_argument('-c', '--content')
-    # parser.add_argument('-t', '--type', default='A')
-    parser.add_argument('-t', '--type')
+    parser.add_argument('-t', '--type', default='A')
     parser.add_argument('-z', '--zone', default=0)
     parser.add_argument('-d', '--delete', action="store_true")
     parser.add_argument('-m', '--multi', action="store_true")
